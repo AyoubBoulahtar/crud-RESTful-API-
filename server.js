@@ -6,13 +6,12 @@ const courseRouter = require('./routes/courseRoutes');
 
     // Connect to MongoDB
 
-const dbURI = 'mongodb+srv://admin:admin@internship101.l64oe.mongodb.net/elearning-db?retryWrites=true&w=majority';
-mongoose.connect(dbURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then((result) => console.log('Successfully connected to the database'))
-  .catch((err)  => console.log(err)); 
+const url = 'mongodb://localhost:27017/elearning';
+const connect = mongoose.connect(url, { useFindAndModify: false, useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
+
+connect.then((db) => {
+    console.log("Connected correctly to server");
+}, (err) => { console.log(err); });
 
     //Parse requests of content type - application/JSON
 
