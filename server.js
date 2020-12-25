@@ -1,7 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const authRoutes = require('./routes/authRoutes');
+
+//Starting an express app
 const app = express();
-const courseRouter = require('./routes/courseRoutes');
+
+//Just for the feature
+app.use(express.static('public'));
+
+app.set('view engine', 'ejs');
 
 
     // Connect to MongoDB
@@ -22,8 +29,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use('/courses', courseRouter);
-
     // Listen for requests
 
 app.listen(3000, () => console.log('server listening for requests on port 3000'))
+
+app.get('/', (req, res) => res.render('home'));
+app.get('/smoothies', (req, res) => res.render('smoothies'));
+
+app.use(authRoutes);
