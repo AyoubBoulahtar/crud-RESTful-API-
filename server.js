@@ -30,6 +30,6 @@ app.use(express.urlencoded({ extended: true }));
 app.listen(3000, () => console.log('server listening for requests on port 3000'))
 
 app.get('/', (req, res) => res.render('home'));
-app.get('/smoothies', (req, res) => res.render('smoothies'));
+app.get('/courses', (req, res) => res.render('courses'));
 
 app.use(authRoutes);
