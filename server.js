@@ -1,13 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 
 //Starting an express app
 const app = express();
 
-//Just for the feature
+//Middleware
 app.use(express.static('public'));
+app.use(cookieParser());
 
+// Parse requests of content type - application/JSON
+app.use(express.json());
+
+// Parse requests of content type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+
+// View engine
 app.set('view engine', 'ejs');
 
 
@@ -18,12 +28,6 @@ const connect = mongoose.connect(url, { useFindAndModify: false, useCreateIndex:
 connect.then((db) => {
     console.log("Connected correctly to server");
 }, (err) => { console.log(err); });
-
-//Parse requests of content type - application/JSON
-app.use(express.json());
-
-//Parse requests of content type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
 
 
 // Listen for requests
