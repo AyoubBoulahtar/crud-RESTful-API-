@@ -1,53 +1,19 @@
-const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { handleErrors } = require('../middleware/authMiddleware');
+const { createToken } = require('../middleware/authMiddleware');
 
-//handle errors
-const handleErrors = (err) => {
-    console.log(err.message, err.code);
-    let errors = { firstName:'', lastName: '', email: '', password: '' };
 
-    // Incorrect email
-    if (err.message === 'Incorrect email') {
-        errors.email = 'This email is not registered';
-    }
-
-    // Incorrect password
-    if (err.message === 'Incorrect password') {
-        errors.password = 'The password is incorrect';
-    }
-
-    // Duplicate error code
-    if (err.code === 11000) {
-        errors.email = 'This email is already registered';
-        return errors;
-    }
-
-    // Validation errors
-    if (err.message.includes('user validation failed')) {
-        Object.values(err.errors).forEach(({properties}) => {
-            errors[properties.path] = properties.message;
-        });
-
-    }
-    return errors;
-}
-
-// Create a token
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-    return jwt.sign({ id }, 'token secret', {expiresIn: maxAge
-    });
-}
-
-module.exports.signup_get = (req, res) => {
+const signup_get = (req, res) => {
     res.render('SignUp');
 }
 
-module.exports.signin_get = (req, res) => {
+const signin_get = (req, res) => {
     res.render('SignIn');
 }
 
-module.exports.signup_post = async (req, res) => {
+const maxAge = 3 * 24 * 60 * 60;
+
+const signup_post = async (req, res) => {
     const {firstName, lastName, email, password} = req.body;
 
     try {
@@ -62,7 +28,7 @@ module.exports.signup_post = async (req, res) => {
     }
 }
 
-module.exports.signin_post = async (req, res) => {
+const signin_post = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -75,4 +41,17 @@ module.exports.signin_post = async (req, res) => {
         const errors = handleErrors(err);
         res.status(400).json({ errors });
     }
+}
+
+const logout_get = (req, res) => {
+    res.cookie('jwt', '', {maxAge: 1});
+    res.redirect('/');
+}
+
+module.exports = {
+    signin_get,
+    signup_get,
+    logout_get,
+    signup_post,
+    signin_post
 }
