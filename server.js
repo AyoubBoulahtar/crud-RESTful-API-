@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
+const { requireAuth } = require('./middleware/authMiddleware');
 
 //Starting an express app
 const app = express();
@@ -34,6 +35,6 @@ connect.then((db) => {
 app.listen(3000, () => console.log('server listening for requests on port 3000'))
 
 app.get('/', (req, res) => res.render('home'));
-app.get('/courses', (req, res) => res.render('courses'));
+app.get('/courses', requireAuth, (req, res) => res.render('courses'));
 
 app.use(authRoutes);
